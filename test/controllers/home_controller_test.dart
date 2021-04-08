@@ -13,7 +13,16 @@ main() {
   test('deve preencher a variavel todos', () async {
     when(repository.fetchTodos()).thenAnswer((_) async => [TodoModel()]);
 
+    expect(controller.state, HomeState.start);
     await controller.start();
+    expect(controller.state, HomeState.success);
     expect(controller.todos.isNotEmpty, true);
+  });
+
+  test('quando a requisição falhar', () async {
+    when(repository.fetchTodos()).thenThrow(Exception());
+    expect(controller.state, HomeState.start);
+    await controller.start();
+    expect(controller.state, HomeState.error);
   });
 }
